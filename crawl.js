@@ -1,5 +1,24 @@
 const { JSDOM } = require('jsdom')
 
+async function crawlPage(currentURL){
+    console.log(`crawling ${currentURL}`)
+    try {
+      const resp = await fetch(currentURL)
+      if (resp.status > 399){
+        console.log(`Got HTTP error, status code: ${resp.status}`)
+        return
+      }
+      const contentType = resp.headers.get('content-type')
+      if (!contentType.includes('text/html')){
+        console.log(`Got non-html response: ${contentType}`)
+        return
+      }
+      console.log(await resp.text())
+    } catch (err){
+      console.log(err.message)
+    }
+  }
+
 function getURLsFromHTML(htmlBody, baseURL){
     let arrayURL = [];
     const dom = new JSDOM(htmlBody);
@@ -12,8 +31,9 @@ function getURLsFromHTML(htmlBody, baseURL){
         } else {
             arrayURL.push(url)
         }
-    });
-    return arrayURL
+    }
+)
+    return arrayURL 
 }
 
 function normalizeURL(urlString) {
@@ -28,9 +48,10 @@ function normalizeURL(urlString) {
 };
 
 
-getURLsFromHTML('https://webinstall.dev/')
 
 
 module.exports = {
-    normalizeURL
+    crawlPage,
+    getURLsFromHTML,
+    normalizeURL    
 }
